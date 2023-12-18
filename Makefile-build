@@ -1,0 +1,36 @@
+ifeq ($(OS),Windows_NT)
+CC	=	tcc
+CFLAGS	=	-c -Wall -DWIN32
+EXE	=	.exe
+else
+CC	=	gcc
+CFLAGS	=	-c -O2 -Wall -DLinux
+EXE	=
+endif
+LDFLAGS	=
+DEPS	=	Makefile doubler.h
+DST	=	doubler
+
+all:	builddir $(DST)
+
+builddir:
+	test -d build || mkdir build
+
+$(DST):	build/main.o build/doubler.o
+	$(CC) $(LDFLAGS) -o $(DST)$(EXE) build/*.o
+
+build/main.o:	main.c $(DEPS)
+	$(CC) $(CFLAGS) main.c -o build/main.o
+
+build/doubler.o:	doubler.c $(DEPS)
+	$(CC) $(CFLAGS) doubler.c -o build/doubler.o
+
+.PHONY: clean
+clean:
+	rm -f build/*.o
+	rm -f $(DST) *~
+
+.PHONY: distclean
+distclean:	clean
+	rm -fr build
+

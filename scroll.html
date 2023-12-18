@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,shrink-to-fit=no">
+		<title>Scroll</title>
+		<style>
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	width: 240px;
+	height: 320px;
+	background-color: black;
+}
+		</style>
+	</head>
+	<body>
+		<canvas width="240" height="320" id="canvas"></canvas>
+		<script>
+"use strict";
+
+const CANVAS_W = 240;
+const CANVAS_H = 320;
+const LINE_H = 40;
+const MAX_SPEED = 3;
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+ctx.fillStyle = 'white';
+ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+var scrollY = 0;
+var fps = 60;
+var start = Date.now();
+var lag = 0;
+var frameDuration = 1000 / fps;
+var speed = 0;
+
+function loop() {
+	requestAnimationFrame(loop, canvas);
+
+	var current = Date.now();
+	var elapsed = current - start;
+	start = current;
+	lag += elapsed;
+
+	if (speed > 0) {
+		speed--;
+		return;
+	}
+
+	speed = MAX_SPEED;
+	scrollY--;
+
+	var imageData = ctx.getImageData(0, 1, CANVAS_W, CANVAS_H - 1);
+	ctx.putImageData(imageData, 0, 0);
+
+	if (scrollY > 0) {
+		ctx.fillStyle = 'white';
+	} else {
+		ctx.fillStyle = 'black';
+		scrollY = LINE_H;
+	}
+
+	ctx.fillRect(0, CANVAS_H - 1, CANVAS_W, 1);
+}
+
+loop();
+		</script>
+	</body>
+</html>
+

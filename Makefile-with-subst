@@ -1,0 +1,8 @@
+HTML_FILES = $(filter-out _page.html, $(shell ls *.html))
+HTML_DST = $(HTML_FILES:%.html=../%.html)
+
+../%.html: %.html _page.html
+	sed -e '/@@CONTENT@@/{r $<' -e 'd' -e '}' _page.html > $@
+
+all: ${HTML_DST}
+
