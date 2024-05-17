@@ -1,0 +1,33 @@
+Run service as a user
+
+Place in ~/.config/systemd/user/my.service:
+
+[Unit]
+Description=My Service
+
+[Service]
+ExecStart=/usr/bin/node app.js
+WorkingDirectory=/home/$USERNAME/proxy-zapier
+Environment=NODE_ENV=production
+Type=simple
+Restart=on-failure
+RestartSec=5
+StartLimitInterval=60s
+StartLimitBurst=3
+
+[Install]
+WantedBy=default.target
+
+Change $USERNAME above to the desired username. Rename the servicefile ("my.service") to the actual name of the service.
+
+Enable and start:
+
+systemctl --user enable my.service
+systemctl --user start my.service
+
+These things must be done as the logged on user. You cannot do it through a "su" or "sudo" session. If you try you will most likely encounter the following error:
+
+Failed to connect to bus: No such file or directory
+
+
+
